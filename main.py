@@ -28,33 +28,33 @@ def main():
         """
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         '-t', '--topic',
         type=str,
         default=None,
         help='爬取主题（默认使用配置文件中的主题）'
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         '--once',
         action='store_true',
         help='执行一次爬取任务'
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         '--daily',
         type=str,
         metavar='TIME',
         help='每日定时执行，格式为HH:MM（如09:00）'
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         '--hourly',
         action='store_true',
         help='每小时执行一次'
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         '--interval',
         type=int,
         metavar='MINUTES',
