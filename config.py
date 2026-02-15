@@ -19,14 +19,19 @@ class Config:
 
     # 爬虫配置
     DEFAULT_TOPIC = os.getenv('DEFAULT_TOPIC', 'physics')
-    MAX_PAPERS_PER_DAY = int(os.getenv('MAX_PAPERS_PER_DAY', '10'))
-    CRAWL_INTERVAL_DAYS = int(os.getenv('CRAWL_INTERVAL_DAYS', '1'))
+    MAX_PAPERS_PER_DAY = int(os.getenv('MAX_PAPERS_PER_DAY', '10'))  # 每日最多发送的新论文数
+    CRAWL_RESULTS = int(os.getenv('CRAWL_RESULTS', '50'))  # 每次爬取的论文总数（用于筛选新论文）
+    CRAWL_INTERVAL_DAYS = int(os.getenv('CRAWL_INTERVAL_DAYS', '1'))  # 查询最近几天的论文
+    MAX_CRAWL_ROUNDS = int(os.getenv('MAX_CRAWL_ROUNDS', '15'))  # 最大爬取轮数
 
     # arXiv API配置
     ARXIV_API_URL = 'http://export.arxiv.org/api/query'
     REQUEST_DELAY = 3  # 请求间隔（秒），遵守arXiv API限制
     MAX_RESULTS = 20  # 每次请求最多返回结果数
 
+ # 数据库配置
+    DB_FILE = 'papers.db'  # SQLite数据库文件路径
+    
     @classmethod
     def validate(cls):
         """验证配置"""

@@ -31,19 +31,31 @@ class PaperScheduler:
             print(f"\n{'='*50}")
             print(f"开始执行任务: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             print(f"主题: {self.topic}")
+            print(f"目标: 获取 {Config.MAX_PAPERS_PER_DAY} 篇新论文")
+            print(f"最大轮数: {Config.MAX_CRAWL_ROUNDS}")
             print(f"{'='*50}\n")
 
-            # 爬取论文
-            papers = self.crawler.crawl_with_limit()
+            # 循环爬取直到达到目标数量或最大轮数
+            new_papers = self.crawler.crawl_until_enough(
+                target_count=Config.MAX_PAPERS_PER_DAY,
+                max_rounds=Config.MAX_CRAWL_ROUNDS
+            )
 
-            if not papers:
-                print("未找到新论文")
+            if not new_papers:
+                print("没有新论文需要发送")
                 return
 
+            # 只发送前N篇新论文（N = MAX_PAPERS_PER_DAY）
+            papers_to_send = new_papers[:Config.MAX_PAPERS_PER_DAY]
+
+            print(f"\n准备发送前 {len(papers_to_send)} 篇新论文...")
+
             # 发送邮件
-            success = self.notifier.send_email(papers, self.topic)
+            success = self.notifier.send_email(papers_to_send, self.topic)
 
             if success:
+                # 标记论文为已发送
+                self.crawler.mark_papers_sent(papers_to_send)
                 print("\n任务执行成功！")
             else:
                 print("\n任务执行失败！")
