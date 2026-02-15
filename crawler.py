@@ -5,6 +5,7 @@ import time
 import feedparser
 from typing import List
 from datetime import datetime, timedelta
+from urllib.parse import quote
 from config import Config
 from models import Paper
 
@@ -34,12 +35,8 @@ class ArxivCrawler:
         Returns:
             查询字符串
         """
-        # 添加时间过滤
-        date_filter = datetime.now() - timedelta(days=days)
-        date_str = date_filter.strftime('%Y%m%d')
-
-        # 构建查询: all:主题 + AND + submittedDate:[日期 TO ]
-        query = f'all:{self.topic} AND submittedDate:[{date_str}0000 TO {date_str}2359]'
+        # 构建查询: all:主题（先不添加时间过滤，提高查询成功率）
+        query = f'all:{self.topic}'
         return query
 
     def fetch_papers(self, days: int = 1, max_results: int = None) -> List[Paper]:
@@ -56,8 +53,9 @@ class ArxivCrawler:
         max_results = max_results or self.max_results
         query = self._build_query(days)
 
-        # 构建请求URL
-        url = f'{self.api_url}?search_query={query}&start=0&max_results={max_results}'
+        # 构建请求URL（需要对查询字符串进行URL编码）
+        encoded_query = quote(query, safe='')
+        url = f'{self.api_url}?search_query={encoded_query}&start=0&max_results={max_results}'
 
         print(f"正在爬取主题: {self.topic} (最近{days}天的论文)...")
         print(f"查询URL: {url}")

@@ -4,7 +4,7 @@
 import time
 import schedule
 from datetime import datetime
-from typing import Callable
+from typing import Optional
 from crawler import ArxivCrawler
 from email_notifier import EmailNotifier
 from config import Config
@@ -13,7 +13,7 @@ from config import Config
 class PaperScheduler:
     """论文爬取调度器"""
 
-    def __init__(self, topic: str = None):
+    def __init__(self, topic: Optional[str] = None):
         """
         初始化调度器
 

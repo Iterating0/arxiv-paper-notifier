@@ -4,7 +4,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+_ = load_dotenv()
 
 
 class Config:
@@ -18,7 +18,7 @@ class Config:
     RECEIVER_EMAIL = os.getenv('RECEIVER_EMAIL', '')
 
     # 爬虫配置
-    DEFAULT_TOPIC = os.getenv('DEFAULT_TOPIC', 'machine learning')
+    DEFAULT_TOPIC = os.getenv('DEFAULT_TOPIC', 'physics')
     MAX_PAPERS_PER_DAY = int(os.getenv('MAX_PAPERS_PER_DAY', '10'))
     CRAWL_INTERVAL_DAYS = int(os.getenv('CRAWL_INTERVAL_DAYS', '1'))
 
