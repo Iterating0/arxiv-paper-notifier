@@ -18,7 +18,7 @@ class Config:
     RECEIVER_EMAIL = os.getenv('RECEIVER_EMAIL', '')
 
     # 爬虫配置
-    DEFAULT_TOPIC = os.getenv('DEFAULT_TOPIC', 'physics')
+    DEFAULT_TOPIC = os.getenv('DEFAULT_TOPIC', 'machine learning')
     MAX_PAPERS_PER_DAY = int(os.getenv('MAX_PAPERS_PER_DAY', '10'))  # 每日最多发送的新论文数
     CRAWL_RESULTS = int(os.getenv('CRAWL_RESULTS', '50'))  # 每次爬取的论文总数（用于筛选新论文）
     CRAWL_INTERVAL_DAYS = int(os.getenv('CRAWL_INTERVAL_DAYS', '1'))  # 查询最近几天的论文
