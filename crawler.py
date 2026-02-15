@@ -3,7 +3,7 @@ arXiv爬虫模块
 """
 import time
 import feedparser
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
 from urllib.parse import quote
 from config import Config
@@ -13,7 +13,7 @@ from models import Paper
 class ArxivCrawler:
     """arXiv论文爬虫"""
 
-    def __init__(self, topic: str = None):
+    def __init__(self, topic: Optional[str] = None):
         """
         初始化爬虫
 
@@ -39,7 +39,7 @@ class ArxivCrawler:
         query = f'all:{self.topic}'
         return query
 
-    def fetch_papers(self, days: int = 1, max_results: int = None) -> List[Paper]:
+    def fetch_papers(self, days: int = 365, max_results: int = 10) -> List[Paper]:
         """
         爬取论文
 
@@ -69,31 +69,33 @@ class ArxivCrawler:
 
             papers = []
             for entry in feed.entries:
-                # 提取作者
+                # 提取作者（确保都是字符串类型）
                 authors = []
                 if 'authors' in entry:
-                    authors = [author.name for author in entry.authors]
+                    authors = [str(author.name) for author in entry.authors]
                 elif 'author' in entry:
-                    authors = [entry.author]
+                    authors = [str(entry.author)]
 
-                # 提取arXiv ID
-                arxiv_id = entry.id.split('/')[-1]
+                # 提取arXiv ID（确保id是字符串类型）
+                entry_id = str(entry.id)
+                arxiv_id = entry_id.split('/')[-1]
 
-                # 提取分类
+                # 提取分类（确保都是字符串类型）
                 tags = []
                 if 'tags' in entry:
-                    tags = [tag.term for tag in entry.tags]
+                    tags = [str(tag.term) for tag in entry.tags]
 
-                # 解析发布时间
-                published = datetime.strptime(entry.published, '%Y-%m-%dT%H:%M:%SZ')
+                # 解析发布时间（确保published是字符串类型）
+                published_str = str(entry.published)
+                published = datetime.strptime(published_str, '%Y-%m-%dT%H:%M:%SZ')
 
-                # 创建论文对象
+                # 创建论文对象（确保所有字符串字段都是str类型）
                 paper = Paper(
-                    title=entry.title,
+                    title=str(entry.title),
                     authors=authors,
-                    abstract=entry.summary,
+                    abstract=str(entry.summary),
                     published=published,
-                    url=entry.link,
+                    url=str(entry.link),
                     arxiv_id=arxiv_id,
                     categories=tags
                 )
@@ -110,7 +112,7 @@ class ArxivCrawler:
             print(f"爬取失败: {str(e)}")
             return []
 
-    def crawl_with_limit(self, max_papers: int = None) -> List[Paper]:
+    def crawl_with_limit(self, max_papers: int = 10) -> List[Paper]:
         """
         带限制的爬取
 
